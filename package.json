@@ -1,7 +1,7 @@
 {
   "name": "account-manager",
   "version": "1.0.0",
-  "description": "Manage accounts",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/Michielu/account-manager.git"
   },
-  "author": "michielu",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Michielu/account-manager/issues"
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/Michielu/account-manager#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.3",
+    "create-react-app": "^1.5.2",
+    "express": "^4.16.2",
     "mongodb": "^2.2.16"
   },
   "devDependencies": {
