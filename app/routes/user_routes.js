@@ -1,5 +1,6 @@
 var ObjectID = require('mongodb').ObjectID;
 
+//Middleware functions
 
 /**
  * 
@@ -11,9 +12,16 @@ module.exports = function (app, db) {
     app.post('/u', (req, res) => {
         const user = {
             username: req.body.username,
+            fn: req.body.fn,
+            ln: req.body.ln,
             password: req.body.password,
-            email: req.body.email
+            email: req.body.email,
         };
+        //Check if every field has been set accurately 
+        //Check if username has been used yet. 
+
+        // const userArray = 
+
         db.collection('users').insert(user, (err, result) => {
             if (err) {
                 res.send({ 'error': 'An error has occured' });
@@ -24,16 +32,16 @@ module.exports = function (app, db) {
     });
 
     //Have to have this in front of all the 'u/:id' or it'll think 'all' is an id
-    app.get('/u/all', (req, res) => {
+    app.get('/usernames', (req, res) => {
         db.collection("users").find({}, { _id: 0, username: 1 }).toArray((err, result) => {
             if (err) res.send(error);
             res.send(result);
         });
     });
 
-    //Only get username and notes 
+    //Only get id username and notes 
     app.get('/u/a', (req, res) => {
-        db.collection("users").find({}, { _id: 0, username: 1, notes: 1 }).toArray((err, result) => {
+        db.collection("users").find({}, { _id: 1, username: 1, notes: 1 }).toArray((err, result) => {
             if (err) res.send(error);
             res.send(result);
         });
@@ -54,13 +62,14 @@ module.exports = function (app, db) {
     })
 
     //Remove
-    app.delete('/u/:id', (req, res) => {
+    app.delete('/deleteuser/:id', (req, res) => {
         const id = req.params.id;
         const details = { '_id': new ObjectID(id) };
         db.collection('users').remove(details, (err, item) => {
             if (err) {
                 res.send({ 'error': 'An error has occurred' });
             } else {
+                //Update? 
                 res.send(item);
             }
         })
@@ -88,7 +97,4 @@ module.exports = function (app, db) {
         }
     });
 
-
-
-    //TODO learn how to update users correctly 
 }
