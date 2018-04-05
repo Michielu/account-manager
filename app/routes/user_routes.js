@@ -11,23 +11,27 @@ module.exports = function (app, db) {
     //Create
     app.post('/u', (req, res) => {
         const user = {
-            username: req.body.username,
+            username: req.body.username.toLowerCase(),
             fn: req.body.fn,
             ln: req.body.ln,
             password: req.body.password,
-            email: req.body.email,
+            email: req.body.email.toLowerCase(),
         };
-        //Check if every field has been set accurately 
+        //Check if every field has been set accurately on client side
+
         //Check if username has been used yet. 
-
-        // const userArray = 
-
-        db.collection('users').insert(user, (err, result) => {
-            if (err) {
-                res.send({ 'error': 'An error has occured' });
-            } else {
-                res.send(result.ops[0]);
-            }
+        db.collection("users").find({ 'username': user.username }, { _id: 1, username: 1, email: 1 }).toArray((err, result) => {
+            if (err) res.send(error);
+            console.log("in call " + JSON.stringify(result));
+            if (result.length == 0) {
+                db.collection('users').insert(user, (err, result) => {
+                    if (err) {
+                        res.send({ 'error': 'An error has sending message' });
+                    } else {
+                        res.send(result.ops[0]);
+                    }
+                });
+            } else res.send("Invalid username");
         });
     });
 
@@ -98,3 +102,4 @@ module.exports = function (app, db) {
     });
 
 }
+
