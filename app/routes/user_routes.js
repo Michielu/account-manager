@@ -8,8 +8,8 @@ var ObjectID = require('mongodb').ObjectID;
  * @param {*} db Database
  */
 module.exports = function (app, db) {
-    //Create
-    app.post('/u', (req, res) => {
+    //Insert new user 
+    app.post('/createuser', (req, res) => {
         const user = {
             username: req.body.username.toLowerCase(),
             fn: req.body.fn,
@@ -35,21 +35,39 @@ module.exports = function (app, db) {
         });
     });
 
+    //Delete by id 
+    app.delete('/deleteuser/:id', (req, res) => {
+        const id = req.params.id;
+        const details = { '_id': new ObjectID(id) };
+        db.collection('users').remove(details, (err, item) => {
+            if (err) {
+                res.send({ 'error': 'An error has deleting username' });
+            } else {
+                //Update? 
+                res.send(item);
+                /** Returns this on success
+                 * {
+                    "n": 1,
+                    "opTime": {
+                        "ts": "6542421526199664641",
+                        "t": 1
+                    },
+                    "electionId": "7fffffff0000000000000001",
+                    "ok": 1
+                    }
+                 */
+            }
+        })
+    })
+
     //Have to have this in front of all the 'u/:id' or it'll think 'all' is an id
     app.get('/usernames', (req, res) => {
-        db.collection("users").find({}, { _id: 0, username: 1 }).toArray((err, result) => {
+        db.collection("users").find({}, { _id: 1, username: 1 }).toArray((err, result) => {
             if (err) res.send(error);
             res.send(result);
         });
     });
 
-    //Only get id username and notes 
-    app.get('/u/a', (req, res) => {
-        db.collection("users").find({}, { _id: 1, username: 1, notes: 1 }).toArray((err, result) => {
-            if (err) res.send(error);
-            res.send(result);
-        });
-    });
 
     //Read
     app.get('/u/:id', (req, res) => {
@@ -65,19 +83,7 @@ module.exports = function (app, db) {
         });
     })
 
-    //Remove
-    app.delete('/deleteuser/:id', (req, res) => {
-        const id = req.params.id;
-        const details = { '_id': new ObjectID(id) };
-        db.collection('users').remove(details, (err, item) => {
-            if (err) {
-                res.send({ 'error': 'An error has occurred' });
-            } else {
-                //Update? 
-                res.send(item);
-            }
-        })
-    })
+
 
     //Update
     app.put('/u/:id', (req, res) => {
