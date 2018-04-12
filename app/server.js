@@ -18,9 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // })
 
 app.set('view engine', 'ejs');
-app.set('views', (__dirname) + '/views');
+app.set('views', (__dirname) + '/views/pages');
 
-app.use(require("./routes/index"));
+app.use(require("./routes/redirect"));
 
 MongoClient.connect(db.url, (err, database) => {
     if (err) return console.log(err)
