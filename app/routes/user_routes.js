@@ -1,5 +1,6 @@
 var ObjectID = require('mongodb').ObjectID;
 
+var bycrypt = require("./util/passwords");
 //Middleware functions
 
 /**
@@ -14,8 +15,9 @@ module.exports = function (app, db) {
             username: req.body.username.toLowerCase(),
             fn: req.body.fn,
             ln: req.body.ln,
-            password: req.body.password,
+            pwd: req.body.pwd,
             email: req.body.email.toLowerCase(),
+            hash: ""
         };
         //Check if every field has been set accurately on client side
 
@@ -24,6 +26,11 @@ module.exports = function (app, db) {
             if (err) res.send(error);
             console.log("in call " + JSON.stringify(result));
             if (result.length == 0) {
+                //Hash Password
+                let pwd = bycrypt.hash(user.pwd);
+                console.log(pwd);
+
+                user.pwd = "newpassword";
                 db.collection('users').insert(user, (err, result) => {
                     if (err) {
                         res.send({ 'error': 'An error has sending message' });
@@ -92,7 +99,7 @@ module.exports = function (app, db) {
             '_id': new ObjectID(id),
         };
         //Do some checks and stuff here
-        if (!req.body.password || !req.body.username || !req.body.email || !req.body.notes) {
+        if (!req.body.pwd || !req.body.username || !req.body.email || !req.body.notes) {
             res.send({ 'error': 'Something is missing' });
         }
         else {
