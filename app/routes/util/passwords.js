@@ -3,6 +3,7 @@ const saltRounds = 10;
 
 module.exports = {
     hash(pwd) {
+        console.log("In hash: " + pwd);
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(pwd, salt).then((hash) => {
                 return {

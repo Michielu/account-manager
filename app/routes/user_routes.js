@@ -22,23 +22,27 @@ module.exports = function (app, db) {
         //Check if every field has been set accurately on client side
 
         //Check if username has been used yet. 
-        db.collection("users").find({ 'username': user.username }, { _id: 1, username: 1, email: 1 }).toArray((err, result) => {
+        const result = db.collection("users").find({ 'username': user.username }, { _id: 1, username: 1, email: 1 }).toArray((err, result) => {
             if (err) res.send(error);
-            console.log("in call " + JSON.stringify(result));
+            console.log("in call " + (result));
             if (result.length == 0) {
                 //Hash Password
                 let pwd = bycrypt.hash(user.pwd);
                 console.log(pwd);
 
-                user.pwd = "newpassword";
-                db.collection('users').insert(user, (err, result) => {
-                    if (err) {
-                        res.send({ 'error': 'An error has sending message' });
-                    } else {
-                        res.send(result.ops[0]);
-                    }
-                });
-            } else res.send("Invalid username");
+
+            } else {
+                console.log("In invalid: " + result.length + result[1])
+                res.send("Invalid username");
+            }
+        });
+        user.pwd = "newpassword";
+        db.collection('users').insert(user, (err, result) => {
+            if (err) {
+                res.send({ 'error': 'An error has sending message' });
+            } else {
+                res.send(result.ops[0]);
+            }
         });
     });
 
